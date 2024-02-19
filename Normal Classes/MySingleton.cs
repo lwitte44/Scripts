@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class MySingleton
 {
-   public static int secretNumber = -1;
+    public static string currentDirection = "?";
+    //public static int secretNumber = -1;
 }
 
