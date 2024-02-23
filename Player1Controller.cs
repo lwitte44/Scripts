@@ -4,61 +4,171 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.InputSystem;
 using UnityEditor.SceneManagement;
+using System.Runtime.CompilerServices;
 
 public class Player1Controller : MonoBehaviour
 {
-    private Player thePlayer;
-    public TextMeshPro tm;
-    //public GameObject destinationGO;//GO means game object
-
-    //private Rigidbody rb;
-    //private float movementX;
-    //private float movementY;
     public float playerSpeed = 0;
     public GameObject northExit;
+    private bool northPassOpen = false;
+    private bool eastPassOpen = false;
+    private bool southPassOpen = false;
+    private bool westPassOpen = false;
     public GameObject southExit;
     public GameObject eastExit;
     public GameObject westExit;
+    public GameObject northBlock;
+    public GameObject southBlock;
+    public GameObject eastBlock;
+    public GameObject westBlock;
     public GameObject middleOfTheRoom;
-    private float speed = 5.0f;
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
+    private string previousExit = "";
 
     // Start is called before the first frame update
     void Start()
     {
-        this.thePlayer = new Player("Aragorn");
-        this.tm.text = this.thePlayer.getName() + " HP: " + this.thePlayer.getHP();
-
-        //rb = GetComponent<Rigidbody>();
-
-        // this.tm.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 1, this.gameObject.transform.position.z);
-        //this.gameObject.transform.position = this.destinationGO.transform.position;
+        
+        
+        print("****amMoving IS FALSE****");
+        
+        //Rigidbody rb = this.gameObject.AddComponent<Rigidbody>();
 
         //disable all exits when the scene first loads
         this.turnOffExits();
 
-        //not our first scene
+        //check direction when the scene loads
+        print(MySingleton.currentDirection);
+
+        //disable the middle collider until we know what our initial state will be
+        //it should already be disabled by default, but for clarity, lets do it here
+        this.middleOfTheRoom.SetActive(false);
+        print("****MIDDLE IS OFF****");
+
         if (!MySingleton.currentDirection.Equals("?"))
         {
-            print("Scene2 Code Starts...");
+            //mark ourselves as moving since we are entering the scene through one of the exits
+            this.amMoving = true;
+            print("****amMoving IS TRUE****");
+            print("****SCENE2 CODE STARTS****");
             print(MySingleton.currentDirection);
+
+            //we will be positioning the player by one of the exits so we can turn on the middle collider
+            this.middleOfTheRoom.SetActive(true);
+            print("****MIDDLE IS ON****");
+            this.amAtMiddleOfRoom = false;
+
             if (MySingleton.currentDirection.Equals("north"))
             {
                 this.gameObject.transform.position = this.southExit.transform.position;
+                this.gameObject.transform.LookAt(this.northExit.transform.position);
+                //rb.MovePosition(this.southExit.transform.position);
+                this.previousExit = "north";
             }
             else if (MySingleton.currentDirection.Equals("south"))
             {
                 this.gameObject.transform.position = this.northExit.transform.position;
+                this.gameObject.transform.LookAt(this.southExit.transform.position);
+                //rb.MovePosition(this.northExit.transform.position);
+                this.previousExit = "south";
             }
             else if (MySingleton.currentDirection.Equals("west"))
             {
                 this.gameObject.transform.position = this.eastExit.transform.position;
+                this.gameObject.transform.LookAt(this.westExit.transform.position);
+                //rb.MovePosition(this.eastExit.transform.position);
+                this.previousExit = "west";
             }
             else if (MySingleton.currentDirection.Equals("east"))
             {
                 this.gameObject.transform.position = this.westExit.transform.position;
+                this.gameObject.transform.LookAt(this.eastExit.transform.position);
+                //rb.MovePosition(this.westExit.transform.position);
+                this.previousExit = "east";
             }
+            StartCoroutine(generateExits());
+        }
+        else
+        {
+            //We will be positioning the play at the middle
+            //so keep the middle collider off for this run of the scene
+            this.amMoving = false;
+            print("****amMoving IS FALSE****");
+            this.amAtMiddleOfRoom = true;
+            this.middleOfTheRoom.SetActive(false);
+            print("****MIDDLE IS OFF****");
+            this.gameObject.transform.position = this.middleOfTheRoom.transform.position;
+        }
+    }
+    IEnumerator generateExits()
+    {
+        print("turned on coroutine");
+        yield return new WaitForSeconds(1);
+        getPreviousExit();
+        print("****PREVIOUS EXIT DONE****");
+        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+        getOpenExits();
+        print("****OPEN EXITS DONE****");
+        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+        blockExits();
+        print("****EXITS BLOCKED****");
+        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+    }
+    // Update is called once per frame
+    void Update()
+    {
+        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            print("****amMoving IS TRUE****");
+            this.turnOnExits();
+            MySingleton.currentDirection = "north";
+            this.gameObject.transform.LookAt(this.northExit.transform.position);
+        }
+        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            print("****amMoving IS TRUE****");
+            this.turnOnExits();
+            MySingleton.currentDirection = "south";
+            this.gameObject.transform.LookAt(this.southExit.transform.position);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            print("****amMoving IS TRUE****");
+            this.turnOnExits();
+            MySingleton.currentDirection = "west";
+            this.gameObject.transform.LookAt(this.westExit.transform.position);
+        }
+        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving)
+        {
+            this.amMoving = true;
+            print("****amMoving IS TRUE****");
+            this.turnOnExits();
+            MySingleton.currentDirection = "east";
+            this.gameObject.transform.LookAt(this.eastExit.transform.position);
+        }
+        //make the player move in the current direction
+        if (MySingleton.currentDirection.Equals("north"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.northExit.transform.position, this.playerSpeed * Time.deltaTime);
+        }
+
+        if (MySingleton.currentDirection.Equals("south"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.southExit.transform.position, this.playerSpeed * Time.deltaTime);
+        }
+
+        if (MySingleton.currentDirection.Equals("west"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.westExit.transform.position, this.playerSpeed * Time.deltaTime);
+        }
+
+        if (MySingleton.currentDirection.Equals("east"))
+        {
+            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.eastExit.transform.position, this.playerSpeed * Time.deltaTime);
         }
     }
     private void turnOffExits()
@@ -75,118 +185,123 @@ public class Player1Controller : MonoBehaviour
         this.eastExit.gameObject.SetActive(true);
         this.westExit.gameObject.SetActive(true);
     }
+    private void blockExits()
+    {
+        this.northBlock.gameObject.SetActive(true);
+        this.southBlock.gameObject.SetActive(true);
+        this.eastBlock.gameObject.SetActive(true);
+        this.westBlock.gameObject.SetActive(true);
+        if (this.northPassOpen == true)
+        {
+            this.northBlock.gameObject.SetActive(false);
+        }
+        if (this.eastPassOpen == true)
+        {
+            this.eastBlock.gameObject.SetActive(false);
+        }
+        if (this.southPassOpen == true)
+        {
+            this.southBlock.gameObject.SetActive(false);
+        }
+        if (this.westPassOpen == true)
+        {
+            this.westBlock.gameObject.SetActive(false);
+        }
+    }
+    private void getPreviousExit()
+    {
+        if (this.previousExit == "north")
+        {
+            this.southPassOpen = true;
+            print("Previous Exit was North ");
+        }
+        if (this.previousExit == "east")
+        {
+            this.westPassOpen = true;
+            print("Previous Exit was East");
+        }
+        if (this.previousExit == "south")
+        {
+            this.northPassOpen = true;
+            print("Previous Exit was South");
+        }
+        if (this.previousExit == "west")
+        {
+            this.eastPassOpen = true;
+            print("Previous Exit was West");
+        }
+    }
+    private void getOpenExits()
+    {
+        int i = Random.Range(1, 5);
+        print("Number of Open Exits: " + i);
+        if ( i == 1)
+        {
+            return;
+        }
+        if (i == 2)
+        {
+            this.eastPassOpen = true;
+            reRoll();  
+        }
+        if (i == 3)
+        {
+            this.southPassOpen = true;
+            reRoll();
+            reRoll();
+        }
+        if (i == 4)
+        {
+            this.westPassOpen = true;
+            this.northPassOpen = true;
+            this.southPassOpen = true;
+            this.eastPassOpen = true;
+        }
+    }
+    private void reRoll()
+    {
+        int i = Random.Range(1, 5);
+        if (i == 1)
+        {
+            this.northPassOpen = true;
+        }
+        if (i == 2)
+        {
+            this.eastPassOpen = true;
+        }
+        if (i == 3)
+        {
+            this.southPassOpen = true;
+        }
+        if (i == 4)
+        {
+            this.westPassOpen = true;
+        }
+    }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("door"))
+        if (other.gameObject.CompareTag("door"))
         {
-            EditorSceneManager.LoadScene("Scene2");
-            print("Scene2 Loaded");
+            print("****DOOR TRIGGERED****");
+            EditorSceneManager.LoadScene("Scene1");
+            print("****SCENE2 LOADED****");
         }
-        else if (other.CompareTag("middleOfTheRoom") && !MySingleton.currentDirection.Equals("?"))
+        else if (other.gameObject.CompareTag("middleOfTheRoom") && !MySingleton.currentDirection.Equals("?"))
         {
-            print("at middle of Room");
+            //we have hit the middle of the room, so lets turn off the collider
+            //until the next run of the scene to avoid additional collisions
+            this.middleOfTheRoom.SetActive(false);
+            this.turnOnExits();
+            print("****AM AT MIDDLE****");
             this.amAtMiddleOfRoom = true;
+            this.amMoving = false;
+            MySingleton.currentDirection = "middle";
+            print(MySingleton.currentDirection);
         }
-       
-    }
-    /*
-    void OnMove(InputValue movementValue)
-    {
-        //assigns the movementValue input to the variable movementVector
-        //Vector2 is the variable type
-        Vector2 movementVector = movementValue.Get<Vector2>();
-        //assigns the variables to there respective directions of movement
-        movementX = movementVector.x;
-        //technically refers to the z movement because y is for vertical
-        movementY = movementVector.y;
-    }
-    */
-    // Update is called once per frame
-    void Update()
-    {
-        if (this.amAtMiddleOfRoom == true)
+        else
         {
-            speed = 0.0f;
-        }
-        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving)
-        {
-            this.amMoving = true;
-            this.turnOnExits();
-            MySingleton.currentDirection = "north";
-            this.gameObject.transform.LookAt(this.northExit.transform.position);
+            print("****UNTAGGED GAMEOBJECT DETECTED****");
         }
 
-        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving)
-        {
-            this.amMoving = true;
-            this.turnOnExits();
-            MySingleton.currentDirection = "south";
-            this.gameObject.transform.LookAt(this.southExit.transform.position);
-        }
-
-        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving)
-        {
-            this.amMoving = true;
-            this.turnOnExits();
-            MySingleton.currentDirection = "west";
-            this.gameObject.transform.LookAt(this.westExit.transform.position);
-        }
-
-        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving)
-        {
-            this.amMoving = true;
-            this.turnOnExits();
-            MySingleton.currentDirection = "east";
-            this.gameObject.transform.LookAt(this.eastExit.transform.position);
-        }
-
-        //make the player move in the current direction
-        if (MySingleton.currentDirection.Equals("north"))
-        {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.northExit.transform.position, this.speed * Time.deltaTime);
-        }
-
-        if (MySingleton.currentDirection.Equals("south"))
-        {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.southExit.transform.position, this.speed * Time.deltaTime);
-        }
-
-        if (MySingleton.currentDirection.Equals("west"))
-        {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.westExit.transform.position, this.speed * Time.deltaTime);
-        }
-
-        if (MySingleton.currentDirection.Equals("east"))
-        {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.eastExit.transform.position, this.speed * Time.deltaTime);
-        }
-    }
-    // FixedUpdate is called 60 times per frame
-    void FixedUpdate()
-    {
-        //this.thePlayer.display();
-        /*
-        /////movement code
-        //Vector3 variables deal with 3 directions of movement while Vector2 deals with two
-        //0.0f means that the Y value (vertical movement) is a float type variable with a value of 0.0
-        Vector3 movement = new Vector3(movementX, 0.0f, movementY);
-        //Rigidbody rb will have force added to it in the directions of the "movement" variable
-        rb.AddForce(movement * playerSpeed);
-        /////
-        ///*/
-        /*
-        if (this.gameObject.transform.position != this.destinationGO.transform.position)
-        {
-            this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.destinationGO.transform.position, speed * Time.deltaTime);
-        }
-        */
-        /*
-        if (MySingleton.player1turn == true)
-        {
-            print("****Player1: " + MySingleton.count + "****");
-            MySingleton.count++;
-            MySingleton.player1turn = false;
-        } 
-        */
     }
 }
