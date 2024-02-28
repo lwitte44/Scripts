@@ -9,18 +9,19 @@ using System.Runtime.CompilerServices;
 public class Player1Controller : MonoBehaviour
 {
     public float playerSpeed = 0;
+    
+    //private bool northPassOpen = false;
+    //private bool eastPassOpen = false;
+    //private bool southPassOpen = false;
+    //private bool westPassOpen = false;
     public GameObject northExit;
-    private bool northPassOpen = false;
-    private bool eastPassOpen = false;
-    private bool southPassOpen = false;
-    private bool westPassOpen = false;
     public GameObject southExit;
     public GameObject eastExit;
     public GameObject westExit;
-    public GameObject northBlock;
-    public GameObject southBlock;
-    public GameObject eastBlock;
-    public GameObject westBlock;
+    //public GameObject northBlock;
+    //public GameObject southBlock;
+    //public GameObject eastBlock;
+    //public GameObject westBlock;
     public GameObject middleOfTheRoom;
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
@@ -29,9 +30,9 @@ public class Player1Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
-        
-        print("****amMoving IS FALSE****");
+
+        print(MySingleton.theCurrentRoom);
+        //print("****amMoving IS FALSE****");
         
         //Rigidbody rb = this.gameObject.AddComponent<Rigidbody>();
 
@@ -39,24 +40,24 @@ public class Player1Controller : MonoBehaviour
         this.turnOffExits();
 
         //check direction when the scene loads
-        print(MySingleton.currentDirection);
+        //print(MySingleton.currentDirection);
 
         //disable the middle collider until we know what our initial state will be
         //it should already be disabled by default, but for clarity, lets do it here
         this.middleOfTheRoom.SetActive(false);
-        print("****MIDDLE IS OFF****");
+        //print("****MIDDLE IS OFF****");
 
         if (!MySingleton.currentDirection.Equals("?"))
         {
             //mark ourselves as moving since we are entering the scene through one of the exits
             this.amMoving = true;
-            print("****amMoving IS TRUE****");
+            //print("****amMoving IS TRUE****");
             print("****SCENE2 CODE STARTS****");
-            print(MySingleton.currentDirection);
+            //print(MySingleton.currentDirection);
 
             //we will be positioning the player by one of the exits so we can turn on the middle collider
             this.middleOfTheRoom.SetActive(true);
-            print("****MIDDLE IS ON****");
+            //print("****MIDDLE IS ON****");
             this.amAtMiddleOfRoom = false;
 
             if (MySingleton.currentDirection.Equals("north"))
@@ -87,20 +88,21 @@ public class Player1Controller : MonoBehaviour
                 //rb.MovePosition(this.westExit.transform.position);
                 this.previousExit = "east";
             }
-            StartCoroutine(generateExits());
+            //StartCoroutine(generateExits());
         }
         else
         {
             //We will be positioning the play at the middle
             //so keep the middle collider off for this run of the scene
             this.amMoving = false;
-            print("****amMoving IS FALSE****");
+            //print("****amMoving IS FALSE****");
             this.amAtMiddleOfRoom = true;
             this.middleOfTheRoom.SetActive(false);
-            print("****MIDDLE IS OFF****");
+            //print("****MIDDLE IS OFF****");
             this.gameObject.transform.position = this.middleOfTheRoom.transform.position;
         }
     }
+    /*
     IEnumerator generateExits()
     {
         print("turned on coroutine");
@@ -115,37 +117,38 @@ public class Player1Controller : MonoBehaviour
         print("****EXITS BLOCKED****");
         print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
     }
+    */
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving)
+        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("north"))
         {
             this.amMoving = true;
-            print("****amMoving IS TRUE****");
+            //print("****amMoving IS TRUE****");
             this.turnOnExits();
             MySingleton.currentDirection = "north";
             this.gameObject.transform.LookAt(this.northExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving)
+        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("south"))
         {
             this.amMoving = true;
-            print("****amMoving IS TRUE****");
+            //print("****amMoving IS TRUE****");
             this.turnOnExits();
             MySingleton.currentDirection = "south";
             this.gameObject.transform.LookAt(this.southExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving)
+        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("west"))
         {
             this.amMoving = true;
-            print("****amMoving IS TRUE****");
+            //print("****amMoving IS TRUE****");
             this.turnOnExits();
             MySingleton.currentDirection = "west";
             this.gameObject.transform.LookAt(this.westExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving)
+        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("east"))
         {
             this.amMoving = true;
-            print("****amMoving IS TRUE****");
+            //print("****amMoving IS TRUE****");
             this.turnOnExits();
             MySingleton.currentDirection = "east";
             this.gameObject.transform.LookAt(this.eastExit.transform.position);
@@ -185,6 +188,7 @@ public class Player1Controller : MonoBehaviour
         this.eastExit.gameObject.SetActive(true);
         this.westExit.gameObject.SetActive(true);
     }
+    /*
     private void blockExits()
     {
         this.northBlock.gameObject.SetActive(true);
@@ -278,11 +282,12 @@ public class Player1Controller : MonoBehaviour
             this.westPassOpen = true;
         }
     }
+    */
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("door"))
         {
-            print("****DOOR TRIGGERED****");
+            //print("****DOOR TRIGGERED****");
             EditorSceneManager.LoadScene("Scene1");
             print("****SCENE2 LOADED****");
         }
@@ -296,7 +301,7 @@ public class Player1Controller : MonoBehaviour
             this.amAtMiddleOfRoom = true;
             this.amMoving = false;
             MySingleton.currentDirection = "middle";
-            print(MySingleton.currentDirection);
+            //print(MySingleton.currentDirection);
         }
         else
         {
