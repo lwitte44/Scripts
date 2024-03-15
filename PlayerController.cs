@@ -5,23 +5,24 @@ using TMPro;
 using UnityEngine.InputSystem;
 using UnityEditor.SceneManagement;
 using System.Runtime.CompilerServices;
+using System;
 
-public class Player1Controller : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     public float playerSpeed = 0;
-    
     //private bool northPassOpen = false;
     //private bool eastPassOpen = false;
     //private bool southPassOpen = false;
     //private bool westPassOpen = false;
-    public GameObject northExit;
-    public GameObject southExit;
-    public GameObject eastExit;
-    public GameObject westExit;
     //public GameObject northBlock;
     //public GameObject southBlock;
     //public GameObject eastBlock;
     //public GameObject westBlock;
+    public GameObject northExit;
+    public GameObject southExit;
+    public GameObject eastExit;
+    public GameObject westExit;
+    
     public GameObject middleOfTheRoom;
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
@@ -30,11 +31,8 @@ public class Player1Controller : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
-        print(MySingleton.theCurrentRoom);
+        print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         //print("****amMoving IS FALSE****");
-        
-        //Rigidbody rb = this.gameObject.AddComponent<Rigidbody>();
 
         //disable all exits when the scene first loads
         this.turnOffExits();
@@ -88,7 +86,7 @@ public class Player1Controller : MonoBehaviour
                 //rb.MovePosition(this.westExit.transform.position);
                 this.previousExit = "east";
             }
-            //StartCoroutine(generateExits());
+            
         }
         else
         {
@@ -102,26 +100,10 @@ public class Player1Controller : MonoBehaviour
             this.gameObject.transform.position = this.middleOfTheRoom.transform.position;
         }
     }
-    /*
-    IEnumerator generateExits()
-    {
-        print("turned on coroutine");
-        yield return new WaitForSeconds(1);
-        getPreviousExit();
-        print("****PREVIOUS EXIT DONE****");
-        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
-        getOpenExits();
-        print("****OPEN EXITS DONE****");
-        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
-        blockExits();
-        print("****EXITS BLOCKED****");
-        print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
-    }
-    */
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("north"))
+        if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving && MySingleton.thePlayer.getCurrentRoom().hasExit("north"))
         {
             this.amMoving = true;
             //print("****amMoving IS TRUE****");
@@ -129,7 +111,7 @@ public class Player1Controller : MonoBehaviour
             MySingleton.currentDirection = "north";
             this.gameObject.transform.LookAt(this.northExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("south"))
+        if (Input.GetKeyUp(KeyCode.DownArrow) && !this.amMoving && MySingleton.thePlayer.getCurrentRoom().hasExit("south"))
         {
             this.amMoving = true;
             //print("****amMoving IS TRUE****");
@@ -137,7 +119,7 @@ public class Player1Controller : MonoBehaviour
             MySingleton.currentDirection = "south";
             this.gameObject.transform.LookAt(this.southExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("west"))
+        if (Input.GetKeyUp(KeyCode.LeftArrow) && !this.amMoving && MySingleton.thePlayer.getCurrentRoom().hasExit("west"))
         {
             this.amMoving = true;
             //print("****amMoving IS TRUE****");
@@ -145,7 +127,7 @@ public class Player1Controller : MonoBehaviour
             MySingleton.currentDirection = "west";
             this.gameObject.transform.LookAt(this.westExit.transform.position);
         }
-        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving && MySingleton.theCurrentRoom.isOpenDoor("east"))
+        if (Input.GetKeyUp(KeyCode.RightArrow) && !this.amMoving && MySingleton.thePlayer.getCurrentRoom().hasExit("east"))
         {
             this.amMoving = true;
             //print("****amMoving IS TRUE****");
@@ -188,101 +170,7 @@ public class Player1Controller : MonoBehaviour
         this.eastExit.gameObject.SetActive(true);
         this.westExit.gameObject.SetActive(true);
     }
-    /*
-    private void blockExits()
-    {
-        this.northBlock.gameObject.SetActive(true);
-        this.southBlock.gameObject.SetActive(true);
-        this.eastBlock.gameObject.SetActive(true);
-        this.westBlock.gameObject.SetActive(true);
-        if (this.northPassOpen == true)
-        {
-            this.northBlock.gameObject.SetActive(false);
-        }
-        if (this.eastPassOpen == true)
-        {
-            this.eastBlock.gameObject.SetActive(false);
-        }
-        if (this.southPassOpen == true)
-        {
-            this.southBlock.gameObject.SetActive(false);
-        }
-        if (this.westPassOpen == true)
-        {
-            this.westBlock.gameObject.SetActive(false);
-        }
-    }
-    private void getPreviousExit()
-    {
-        if (this.previousExit == "north")
-        {
-            this.southPassOpen = true;
-            print("Previous Exit was North ");
-        }
-        if (this.previousExit == "east")
-        {
-            this.westPassOpen = true;
-            print("Previous Exit was East");
-        }
-        if (this.previousExit == "south")
-        {
-            this.northPassOpen = true;
-            print("Previous Exit was South");
-        }
-        if (this.previousExit == "west")
-        {
-            this.eastPassOpen = true;
-            print("Previous Exit was West");
-        }
-    }
-    private void getOpenExits()
-    {
-        int i = Random.Range(1, 5);
-        print("Number of Open Exits: " + i);
-        if ( i == 1)
-        {
-            return;
-        }
-        if (i == 2)
-        {
-            this.eastPassOpen = true;
-            reRoll();  
-        }
-        if (i == 3)
-        {
-            this.southPassOpen = true;
-            reRoll();
-            reRoll();
-        }
-        if (i == 4)
-        {
-            this.westPassOpen = true;
-            this.northPassOpen = true;
-            this.southPassOpen = true;
-            this.eastPassOpen = true;
-        }
-    }
-    private void reRoll()
-    {
-        int i = Random.Range(1, 5);
-        if (i == 1)
-        {
-            this.northPassOpen = true;
-        }
-        if (i == 2)
-        {
-            this.eastPassOpen = true;
-        }
-        if (i == 3)
-        {
-            this.southPassOpen = true;
-        }
-        if (i == 4)
-        {
-            this.westPassOpen = true;
-        }
-    }
-    */
+   
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("door"))
@@ -290,6 +178,8 @@ public class Player1Controller : MonoBehaviour
             //print("****DOOR TRIGGERED****");
             EditorSceneManager.LoadScene("Scene1");
             print("****SCENE2 LOADED****");
+            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.thePlayer);
+            print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         }
         else if (other.gameObject.CompareTag("middleOfTheRoom") && !MySingleton.currentDirection.Equals("?"))
         {

@@ -12,5 +12,9 @@ public class Exit
         this.direction = direction;
         this.destinationRoom = destinationRoom;
     }
-
+    
+    public string getDirection()
+    {
+        return this.direction;
+    }
 }

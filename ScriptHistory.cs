@@ -24,7 +24,24 @@ public class ScriptHistory : MonoBehaviour
         //this.gameObject.transform.position = this.destinationGO.transform.position;
 
         //StartCoroutine(TurnOnMiddle());
+        //StartCoroutine(generateExits());
     }
+    /*
+   IEnumerator generateExits()
+   {
+       print("turned on coroutine");
+       yield return new WaitForSeconds(1);
+       getPreviousExit();
+       print("****PREVIOUS EXIT DONE****");
+       print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+       getOpenExits();
+       print("****OPEN EXITS DONE****");
+       print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+       blockExits();
+       print("****EXITS BLOCKED****");
+       print("****NorthPassOpen: " + this.northPassOpen + " EastPassOpen: " + this.eastPassOpen + " SouthPassOpen: " + this.southPassOpen + " WestPassOpen: " + this.westPassOpen);
+   }
+   */
     // Update is called once per frame
     void Update()
     {
@@ -80,4 +97,99 @@ public class ScriptHistory : MonoBehaviour
 
     }
     */
+    /*
+   private void blockExits()
+   {
+       this.northBlock.gameObject.SetActive(true);
+       this.southBlock.gameObject.SetActive(true);
+       this.eastBlock.gameObject.SetActive(true);
+       this.westBlock.gameObject.SetActive(true);
+       if (this.northPassOpen == true)
+       {
+           this.northBlock.gameObject.SetActive(false);
+       }
+       if (this.eastPassOpen == true)
+       {
+           this.eastBlock.gameObject.SetActive(false);
+       }
+       if (this.southPassOpen == true)
+       {
+           this.southBlock.gameObject.SetActive(false);
+       }
+       if (this.westPassOpen == true)
+       {
+           this.westBlock.gameObject.SetActive(false);
+       }
+   }
+   private void getPreviousExit()
+   {
+       if (this.previousExit == "north")
+       {
+           this.southPassOpen = true;
+           print("Previous Exit was North ");
+       }
+       if (this.previousExit == "east")
+       {
+           this.westPassOpen = true;
+           print("Previous Exit was East");
+       }
+       if (this.previousExit == "south")
+       {
+           this.northPassOpen = true;
+           print("Previous Exit was South");
+       }
+       if (this.previousExit == "west")
+       {
+           this.eastPassOpen = true;
+           print("Previous Exit was West");
+       }
+   }
+   private void getOpenExits()
+   {
+       int i = Random.Range(1, 5);
+       print("Number of Open Exits: " + i);
+       if ( i == 1)
+       {
+           return;
+       }
+       if (i == 2)
+       {
+           this.eastPassOpen = true;
+           reRoll();  
+       }
+       if (i == 3)
+       {
+           this.southPassOpen = true;
+           reRoll();
+           reRoll();
+       }
+       if (i == 4)
+       {
+           this.westPassOpen = true;
+           this.northPassOpen = true;
+           this.southPassOpen = true;
+           this.eastPassOpen = true;
+       }
+   }
+   private void reRoll()
+   {
+       int i = Random.Range(1, 5);
+       if (i == 1)
+       {
+           this.northPassOpen = true;
+       }
+       if (i == 2)
+       {
+           this.eastPassOpen = true;
+       }
+       if (i == 3)
+       {
+           this.southPassOpen = true;
+       }
+       if (i == 4)
+       {
+           this.westPassOpen = true;
+       }
+   }
+   */
 }

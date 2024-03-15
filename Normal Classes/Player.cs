@@ -5,27 +5,21 @@ using UnityEngine;
 public class Player
 {
     private string name;
-    private int hp;
+    private Room currentRoom;
 
     public Player(string name)
     {
-        //(int) takes the float value, cuts of the decimal numbers, and turns it into an int
-        this.hp = (int)Random.Range(10.0f, 20.0f);
         this.name = name;
+        this.currentRoom = null;
     }
 
-    public void display()
+   public Room getCurrentRoom() 
     {
-        Debug.Log(this.name + " -> HP: " + this.hp);
+        return this.currentRoom;
     }
 
-    public string getName()
+    public void setCurrentRoom(Room r) 
     {
-        return this.name;
-    }
-
-    public int getHP()
-    {
-        return this.hp;
+        this.currentRoom = r;
     }
 }
