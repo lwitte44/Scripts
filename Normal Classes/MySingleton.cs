@@ -7,6 +7,7 @@ public class MySingleton
     public static string currentDirection = "?";
     public static Player thePlayer;
     public static Dungeon theDungeon = MySingleton.generateDungeon();
+    
     public static Dungeon generateDungeon()
     {
         Room r1 = new Room("R1");
@@ -32,6 +33,7 @@ public class MySingleton
         MySingleton.thePlayer = new Player("Aragorn");
         theDungeon.addPlayer(MySingleton.thePlayer);
         return theDungeon;
+        Debug.Log("Dungeon Generated");
     }
 }
 

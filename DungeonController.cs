@@ -6,6 +6,10 @@ public class DungeonController : MonoBehaviour
 {
     //public GameObject[] closedDoors;
     public GameObject northDoor, southDoor, eastDoor, westDoor;
+    private void Awake()
+    {
+        Dungeon theDungeon = MySingleton.generateDungeon();
+}
     // Start is called before the first frame update
     void Start()
     {
