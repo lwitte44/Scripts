@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class MySingleton
@@ -7,7 +8,11 @@ public class MySingleton
     public static string currentDirection = "?";
     public static Player thePlayer;
     public static Dungeon theDungeon = MySingleton.generateDungeon();
+
+    // Variable to keep track of collected "PickUp" objects.
+    public static int count = 0;
     
+
     public static Dungeon generateDungeon()
     {
         Room r1 = new Room("R1");
@@ -33,7 +38,6 @@ public class MySingleton
         MySingleton.thePlayer = new Player("Aragorn");
         theDungeon.addPlayer(MySingleton.thePlayer);
         return theDungeon;
-        Debug.Log("Dungeon Generated");
     }
 }
 

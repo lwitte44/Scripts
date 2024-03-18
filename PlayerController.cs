@@ -6,6 +6,7 @@ using UnityEngine.InputSystem;
 using UnityEditor.SceneManagement;
 using System.Runtime.CompilerServices;
 using System;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,11 +29,16 @@ public class PlayerController : MonoBehaviour
     private bool amAtMiddleOfRoom = false;
     private string previousExit = "";
 
+    // UI text component to display count of "PickUp" objects collected.
+    public TextMeshProUGUI countText;
+
     // Start is called before the first frame update
     void Start()
     {
         print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         //print("****amMoving IS FALSE****");
+
+        SetCountText();
 
         //disable all exits when the scene first loads
         this.turnOffExits();
@@ -170,16 +176,18 @@ public class PlayerController : MonoBehaviour
         this.eastExit.gameObject.SetActive(true);
         this.westExit.gameObject.SetActive(true);
     }
-   
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("door"))
         {
             //print("****DOOR TRIGGERED****");
+
+            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.currentDirection);
+
             EditorSceneManager.LoadScene("Scene1");
             print("****SCENE2 LOADED****");
-            MySingleton.thePlayer.getCurrentRoom().removePlayer(MySingleton.thePlayer);
-            print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
+
         }
         else if (other.gameObject.CompareTag("middleOfTheRoom") && !MySingleton.currentDirection.Equals("?"))
         {
@@ -193,10 +201,28 @@ public class PlayerController : MonoBehaviour
             MySingleton.currentDirection = "middle";
             //print(MySingleton.currentDirection);
         }
+        else if (other.gameObject.CompareTag("collectible"))
+        {
+            // Deactivate the collided object (making it disappear).
+            other.gameObject.SetActive(false);
+
+            // Increment the count of "PickUp" objects collected.
+            MySingleton.count = MySingleton.count + 1;
+
+            // Update the count display.
+            SetCountText();
+
+
+        }
         else
         {
             print("****UNTAGGED GAMEOBJECT DETECTED****");
         }
-
+    }
+    // Function to update the displayed count of "PickUp" objects collected.
+    void SetCountText()
+    {
+        // Update the count text with the current count.
+        this.countText.text = "Count: " + MySingleton.count.ToString();
     }
 }
