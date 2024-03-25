@@ -19,10 +19,7 @@ public class PlayerController : MonoBehaviour
     //public GameObject southBlock;
     //public GameObject eastBlock;
     //public GameObject westBlock;
-    public GameObject northExit;
-    public GameObject southExit;
-    public GameObject eastExit;
-    public GameObject westExit;
+    public GameObject northExit, southExit, eastExit, westExit;
     
     public GameObject middleOfTheRoom;
     private bool amMoving = false;
@@ -31,7 +28,20 @@ public class PlayerController : MonoBehaviour
 
     // UI text component to display count of "PickUp" objects collected.
     public TextMeshProUGUI countText;
-
+    private void turnOffExits()
+    {
+        this.northExit.gameObject.SetActive(false);
+        this.southExit.gameObject.SetActive(false);
+        this.eastExit.gameObject.SetActive(false);
+        this.westExit.gameObject.SetActive(false);
+    }
+    private void turnOnExits()
+    {
+        this.northExit.gameObject.SetActive(true);
+        this.southExit.gameObject.SetActive(true);
+        this.eastExit.gameObject.SetActive(true);
+        this.westExit.gameObject.SetActive(true);
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -162,20 +172,6 @@ public class PlayerController : MonoBehaviour
             this.gameObject.transform.position = Vector3.MoveTowards(this.gameObject.transform.position, this.eastExit.transform.position, this.playerSpeed * Time.deltaTime);
         }
     }
-    private void turnOffExits()
-    {
-        this.northExit.gameObject.SetActive(false);
-        this.southExit.gameObject.SetActive(false);
-        this.eastExit.gameObject.SetActive(false);
-        this.westExit.gameObject.SetActive(false);
-    }
-    private void turnOnExits()
-    {
-        this.northExit.gameObject.SetActive(true);
-        this.southExit.gameObject.SetActive(true);
-        this.eastExit.gameObject.SetActive(true);
-        this.westExit.gameObject.SetActive(true);
-    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -193,13 +189,14 @@ public class PlayerController : MonoBehaviour
         {
             //we have hit the middle of the room, so lets turn off the collider
             //until the next run of the scene to avoid additional collisions
+
             this.middleOfTheRoom.SetActive(false);
             this.turnOnExits();
+
             print("****AM AT MIDDLE****");
             this.amAtMiddleOfRoom = true;
             this.amMoving = false;
             MySingleton.currentDirection = "middle";
-            //print(MySingleton.currentDirection);
         }
         else if (other.gameObject.CompareTag("collectible"))
         {
@@ -208,21 +205,30 @@ public class PlayerController : MonoBehaviour
 
             // Increment the count of "PickUp" objects collected.
             MySingleton.count = MySingleton.count + 1;
-
+            Room theCurrentRoom = MySingleton.thePlayer.getCurrentRoom();
+            if (MySingleton.isThisTheFirstTimeInTheFirstRoom)
+            {
+                theCurrentRoom.removeCollectible(MySingleton.currentDirection);
+                MySingleton.isThisTheFirstTimeInTheFirstRoom = false;
+            }
+            else
+            {
+                theCurrentRoom.removeCollectible(MySingleton.flipDirection(MySingleton.currentDirection));
+            }
             // Update the count display.
             SetCountText();
-
-
         }
         else
         {
             print("****UNTAGGED GAMEOBJECT DETECTED****");
         }
+        EditorSceneManager.LoadScene("MonsterFight");
+        MySingleton.isInFightScene = true;
     }
     // Function to update the displayed count of "PickUp" objects collected.
     void SetCountText()
     {
         // Update the count text with the current count.
-        this.countText.text = "Count: " + MySingleton.count.ToString();
+        this.countText.text = "Rubies: " + MySingleton.count.ToString();
     }
 }
