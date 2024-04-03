@@ -1,12 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
-using UnityEngine.InputSystem;
 using UnityEditor.SceneManagement;
-using System.Runtime.CompilerServices;
-using System;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +14,7 @@ public class PlayerController : MonoBehaviour
     //public GameObject eastBlock;
     //public GameObject westBlock;
     public GameObject northExit, southExit, eastExit, westExit;
-    
+
     public GameObject middleOfTheRoom;
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
@@ -102,7 +96,7 @@ public class PlayerController : MonoBehaviour
                 //rb.MovePosition(this.westExit.transform.position);
                 this.previousExit = "east";
             }
-            
+
         }
         else
         {
@@ -200,21 +194,19 @@ public class PlayerController : MonoBehaviour
         }
         else if (other.gameObject.CompareTag("collectible"))
         {
+            EditorSceneManager.LoadScene("MonsterFight");
+            print("****FIGHT SCENE LOADED****");
+
             // Deactivate the collided object (making it disappear).
             other.gameObject.SetActive(false);
 
             // Increment the count of "PickUp" objects collected.
             MySingleton.count = MySingleton.count + 1;
+
+
             Room theCurrentRoom = MySingleton.thePlayer.getCurrentRoom();
-            if (MySingleton.isThisTheFirstTimeInTheFirstRoom)
-            {
-                theCurrentRoom.removeCollectible(MySingleton.currentDirection);
-                MySingleton.isThisTheFirstTimeInTheFirstRoom = false;
-            }
-            else
-            {
-                theCurrentRoom.removeCollectible(MySingleton.flipDirection(MySingleton.currentDirection));
-            }
+            theCurrentRoom.removeCollectible(other.GetComponent<CollectibleController>().direction);
+
             // Update the count display.
             SetCountText();
         }
@@ -222,8 +214,6 @@ public class PlayerController : MonoBehaviour
         {
             print("****UNTAGGED GAMEOBJECT DETECTED****");
         }
-        EditorSceneManager.LoadScene("MonsterFight");
-        MySingleton.isInFightScene = true;
     }
     // Function to update the displayed count of "PickUp" objects collected.
     void SetCountText()

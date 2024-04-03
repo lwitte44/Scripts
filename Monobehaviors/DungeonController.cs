@@ -7,22 +7,10 @@ public class DungeonController : MonoBehaviour
     //public GameObject[] closedDoors;
     public GameObject northDoor, southDoor, eastDoor, westDoor;
     public GameObject northCollectible, southCollectible, eastCollectible, westCollectible;
-    public GameObject enemyMon;
 
-    private void turnOffExits()
-    {
-        this.northDoor.gameObject.SetActive(false);
-        this.southDoor.gameObject.SetActive(false);
-        this.eastDoor.gameObject.SetActive(false);
-        this.westDoor.gameObject.SetActive(false);
-    }
     // Start is called before the first frame update
     void Start()
     {
-        if (MySingleton.isInFightScene.Equals(true))
-        {
-            turnOffExits();
-        }
        this.setDoors();
        this.setCollectibles();
     }
