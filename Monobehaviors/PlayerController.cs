@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,6 +20,7 @@ public class PlayerController : MonoBehaviour
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
     private string previousExit = "";
+    private bool hasPlayerDied = false;
 
     // UI text component to display count of "PickUp" objects collected.
     public TextMeshProUGUI countText;
@@ -39,6 +41,10 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        if (MySingleton.playerWin == false)
+        {
+            MySingleton.count = 0;
+        }
         print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         //print("****amMoving IS FALSE****");
 

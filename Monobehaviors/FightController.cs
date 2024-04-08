@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 
 public class FightController : MonoBehaviour
@@ -24,7 +25,9 @@ public class FightController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        this.theMonster = new Monster("Lurtz");
+       
+        this.theMonster = new Monster("Lurtz"); 
+        resetStats();
         print("BATTLE STARTED");
         Setstats();
         print("Player Starting Stats: HP: " + MySingleton.thePlayer.getCurrentHP() + " AC: " + MySingleton.thePlayer.getCurrentAC());
@@ -104,6 +107,8 @@ public class FightController : MonoBehaviour
             this.Player.gameObject.SetActive(false);
             this.PlayerStats.gameObject.SetActive(false);
             this.currentAttacker = null;
+            MySingleton.playerWin = false;
+            EditorSceneManager.LoadScene("Scene1");
         }
         else if (this.theMonster.getCurrentHP() <= 0)
         {
@@ -111,6 +116,8 @@ public class FightController : MonoBehaviour
             this.Monster.gameObject.SetActive(false);
             this.MonsterStats.gameObject.SetActive(false);
             this.currentAttacker = null;
+            MySingleton.playerWin = true;
+            EditorSceneManager.LoadScene("Scene1");
         }
         else
         {
@@ -159,6 +166,11 @@ public class FightController : MonoBehaviour
             this.AttackText.text = "";
         }
 
+    }
+    private void resetStats()
+    {
+        this.theMonster.rerollHP();
+        MySingleton.thePlayer.rerollHP();
     }
 
 }

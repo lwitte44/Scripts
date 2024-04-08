@@ -9,6 +9,7 @@ public class MySingleton
     public static Player thePlayer;
     public static Dungeon theDungeon = MySingleton.generateDungeon();
     public static bool isThisTheFirstTimeInTheFirstRoom = true;
+    public static bool playerWin = false;
 
     public static string flipDirection(string direction)
     {

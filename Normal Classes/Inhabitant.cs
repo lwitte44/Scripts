@@ -48,4 +48,8 @@ public class Inhabitant
     {
         this.AC = n;
     }
+    public void rerollHP()
+    {
+        this.HP = Random.Range(10, 16); // between 10 and 15
+    }
 }
