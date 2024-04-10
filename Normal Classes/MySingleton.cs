@@ -10,6 +10,7 @@ public class MySingleton
     public static Dungeon theDungeon = MySingleton.generateDungeon();
     public static bool isThisTheFirstTimeInTheFirstRoom = true;
     public static bool playerWin = false;
+    public static bool hasUpgrade = false;
 
     public static string flipDirection(string direction)
     {
@@ -37,7 +38,7 @@ public class MySingleton
     }
 
     // Variable to keep track of collected "PickUp" objects.
-    public static int count = 0;
+    public static int count = 4;
     
     //generates the dungeon layout
     public static Dungeon generateDungeon()

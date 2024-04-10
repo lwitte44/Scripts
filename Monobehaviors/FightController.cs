@@ -60,7 +60,16 @@ public class FightController : MonoBehaviour
                 {
                     print("PLAYER ATTACK");
                     this.theCurrentAnimator.SetTrigger("attackP");
-                    this.theMonster.setCurrentHP(this.theMonster.getCurrentHP() - diceRole(6));
+
+                    if (MySingleton.hasUpgrade == true)
+                    {
+                        this.theMonster.setCurrentHP(this.theMonster.getCurrentHP() - diceRole(6) - 4);
+                        print("USED UPGRADE");
+                    }
+                    else
+                    {
+                        this.theMonster.setCurrentHP(this.theMonster.getCurrentHP() - diceRole(6));
+                    }
 
                     StartCoroutine(attackMove());
 
@@ -117,6 +126,7 @@ public class FightController : MonoBehaviour
             this.MonsterStats.gameObject.SetActive(false);
             this.currentAttacker = null;
             MySingleton.playerWin = true;
+            MySingleton.count = MySingleton.count + 1;
             EditorSceneManager.LoadScene("Scene1");
         }
         else

@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     //public GameObject eastBlock;
     //public GameObject westBlock;
     public GameObject northExit, southExit, eastExit, westExit;
+    
 
     public GameObject middleOfTheRoom;
     private bool amMoving = false;
@@ -41,10 +42,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        if (MySingleton.playerWin == false)
-        {
-            MySingleton.count = 0;
-        }
+        this.gameObject.transform.position = middleOfTheRoom.transform.position;
         print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         //print("****amMoving IS FALSE****");
 
@@ -119,6 +117,10 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.H))
+        {
+            EditorSceneManager.LoadScene("ShopkeeperScene");
+        }
         if (Input.GetKeyUp(KeyCode.UpArrow) && !this.amMoving && MySingleton.thePlayer.getCurrentRoom().hasExit("north"))
         {
             this.amMoving = true;
@@ -207,7 +209,7 @@ public class PlayerController : MonoBehaviour
             other.gameObject.SetActive(false);
 
             // Increment the count of "PickUp" objects collected.
-            MySingleton.count = MySingleton.count + 1;
+            //MySingleton.count = MySingleton.count + 1;
 
 
             Room theCurrentRoom = MySingleton.thePlayer.getCurrentRoom();
