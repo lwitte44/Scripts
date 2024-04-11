@@ -38,7 +38,7 @@ public class MySingleton
     }
 
     // Variable to keep track of collected "PickUp" objects.
-    public static int count = 4;
+    public static int count = 0;
     
     //generates the dungeon layout
     public static Dungeon generateDungeon()

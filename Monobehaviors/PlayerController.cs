@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     
 
     public GameObject middleOfTheRoom;
+    private Animator playerAnimator;
     private bool amMoving = false;
     private bool amAtMiddleOfRoom = false;
     private string previousExit = "";
@@ -42,6 +43,8 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        this.playerAnimator = this.gameObject.GetComponent<Animator>();
+
         this.gameObject.transform.position = middleOfTheRoom.transform.position;
         print("I'm in this room: " + MySingleton.thePlayer.getCurrentRoom());
         //print("****amMoving IS FALSE****");
@@ -117,6 +120,14 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (amMoving == true)
+        {
+            playerAnimator.SetBool("isWalking", true);
+        }
+        else
+        {
+            playerAnimator.SetBool("isWalking", false);
+        }
         if (Input.GetKeyUp(KeyCode.H))
         {
             EditorSceneManager.LoadScene("ShopkeeperScene");
