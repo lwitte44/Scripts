@@ -127,8 +127,9 @@ public class FightController : MonoBehaviour
                     //StartCoroutine(missMove());
                     setTurn();
                     this.currentAttacker = this.Player;
-                }
+                } 
             }
+            print("I'm dumb.");
         }
     }
     private void deathCheck()
@@ -171,6 +172,10 @@ public class FightController : MonoBehaviour
         {
             StartCoroutine(missMove());
         }
+        else
+        {
+            print("****ATTACK BROKEN****");
+        }
     }
     IEnumerator attackMove()
         {
@@ -208,6 +213,7 @@ public class FightController : MonoBehaviour
     {
         if (MySingleton.thePlayer.getCurrentHP() <= 0)
         {
+            yield return new WaitForSeconds(3);
             this.GameEndText.text = "GAMEOVER";
             this.AttackText.text = "Monster Wins!";
             this.Player.gameObject.SetActive(false);
@@ -219,6 +225,7 @@ public class FightController : MonoBehaviour
         }
         else if (this.theMonster.getCurrentHP() <= 0)
         {
+            yield return new WaitForSeconds(3);
             this.GameEndText.text = "GAMEOVER";
             this.AttackText.text = "Player Wins!";
             this.DragonList[this.dragonIndex].gameObject.SetActive(false);
