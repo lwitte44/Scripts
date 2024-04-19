@@ -50,7 +50,7 @@ public class FightController : MonoBehaviour
         }
         else
         {
-            this.currentAttacker = realDragon;
+            this.currentAttacker = this.realDragon;
             print("Monster goes first...");
             this.AttackText.text = "Monster Turn:";
         }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -66,6 +68,44 @@ public class MySingleton
         MySingleton.thePlayer = new Player("Aragorn");
         theDungeon.addPlayer(MySingleton.thePlayer);
         return theDungeon;
+    }
+
+    public static string readJsonString()
+    {
+        string filePath = "Assets/Data Files/Items_data_json.txt"; // Path to the file
+        string answer = "";
+
+        // Check if the file exists
+        if (File.Exists(filePath))
+        {
+            try
+            {
+                Debug.Log("Serialized JSON Parsing");
+                // Open the file to read from
+                using (StreamReader reader = new StreamReader(filePath))
+                {
+                    string line;
+                    // Read and display lines from the file until the end of the file is reached
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        answer = answer + line;
+                    }
+                    return answer;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Display any errors that occurred during reading the file
+                Debug.Log("An error occurred while reading the file:");
+                Debug.Log(ex.Message);
+                return null;
+            }
+        }
+        else
+        {
+            Debug.Log("The file does not exist.");
+            return null;
+        }
     }
 }
 

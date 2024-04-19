@@ -10,36 +10,43 @@ using System;
 public class ShopController : MonoBehaviour
 {
     public GameObject Shopkeeper;
-    public GameObject Upgrade;
-    public TextMeshPro UpgradeDescription;
+    //public GameObject SteakUpgrade, CarrotUpgrade, CakeUpgrade, FishUpgrade;
+    public TextMeshPro SteakNumberTMP, CarrotNumberTMP, CakeNumberTMP, FishNumberTMP;
     public TextMeshProUGUI RubyErrorMessage;
     public TextMeshProUGUI RubyCount;
-    private int upgradePrice = 3;
+    public GameObject[] UpgradeArray;
+    public TextMeshPro[] ItemNumbersArrayTMP;
+    private int UpgradeIndex = 0;
+   
+
     // Start is called before the first frame update
     void Start()
     {
         setCount();
+        setShop();
 
         ////////////////
 
-        this.updatePlayerTMP();
-        this.itemTMP.text = "" + ItemsSingleton.steakItemCost;
+        //this.updatePlayerTMP();
+        //this.itemTMP.text = "" + ItemsSingleton.steakItemCost;
 
         //read plain text file
         this.readItemsData();
 
+        
         //read json file with serialization
-        string jsonString = this.readItemsDataJson();
+        string jsonString = MySingleton.readJsonString(); 
 
         // Parse the JSON string
         RootObject root = JsonUtility.FromJson<RootObject>(jsonString);
 
+        
         // Output the data to the console
         foreach (var item in root.items)
         {
             print($"Name: {item.name}, Stat Impacted: {item.stat_impacted}, Modifier: {item.modifier}");
         }
-
+        
         /////////////////
 
     }
@@ -47,14 +54,37 @@ public class ShopController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            this.UpgradeIndex++;
+            if(this.UpgradeIndex > UpgradeArray.Length)
+            {
+                this.UpgradeIndex--;
+                setShop();
+            }
+            setShop();
+            
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow)) 
+        {
+            this.UpgradeIndex--;
+            if (this.UpgradeIndex < 0)
+            {
+                this.UpgradeIndex++;
+                setShop();
+            }
+            setShop();
+        }
+        
+        
         if(Input.GetKeyUp(KeyCode.G))
         {
-            if (MySingleton.count >= upgradePrice)
+            if (MySingleton.count >= ItemsSingleton.steakItemCost)
             {
-                this.Upgrade.gameObject.SetActive(false);
-                this.UpgradeDescription.gameObject.SetActive(false);
+                //this.Upgrade.gameObject.SetActive(false);
+                //this.UpgradeDescription.gameObject.SetActive(false);
                 MySingleton.hasUpgrade = true;
-                MySingleton.count = MySingleton.count - upgradePrice;
+                MySingleton.count = MySingleton.count - ItemsSingleton.steakItemCost;
                 setCount();
 
             }
@@ -78,15 +108,30 @@ public class ShopController : MonoBehaviour
         yield return new WaitForSeconds(1);
         this.RubyErrorMessage.gameObject.SetActive(false);
     }
+    
+    private void setShop()
+    {
+        this.UpgradeArray[0].gameObject.SetActive(false);
+        this.ItemNumbersArrayTMP[0].text = "1";
+        this.UpgradeArray[1].gameObject.SetActive(false);
+        this.ItemNumbersArrayTMP[1].text = "2";
+        this.UpgradeArray[2].gameObject.SetActive(false);
+        this.ItemNumbersArrayTMP[2].text = "3";
+        this.UpgradeArray[3].gameObject.SetActive(false);
+        this.ItemNumbersArrayTMP[3].text = "4";
 
- 
-  /////////////////////////
-  
+        this.UpgradeArray[UpgradeIndex].gameObject.SetActive(true);
+        this.ItemNumbersArrayTMP[UpgradeIndex].text = "";
+    }
+    
+    //
+    /////////////////////////
+
 
     private void readItemsData()
     {
-        string filePath = "Assets/Data Files/items_data.txt"; // Path to the file
-        string answer = "";
+        string filePath = "Assets/Data Files/Items_data.txt"; // Path to the file
+        //string answer = "";
 
         // Check if the file exists
         if (File.Exists(filePath))
@@ -128,7 +173,7 @@ public class ShopController : MonoBehaviour
             print("The file does not exist.");
         }
     }
-
+    /*
     private string readItemsDataJson()
     {
         string filePath = "Assets/Data Files/items_data_json.txt"; // Path to the file
@@ -168,5 +213,5 @@ public class ShopController : MonoBehaviour
     }
 
     ///////////////////
-    
+    */
 }
