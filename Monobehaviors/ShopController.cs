@@ -14,16 +14,16 @@ public class ShopController : MonoBehaviour
     public TextMeshPro SteakNumberTMP, CarrotNumberTMP, CakeNumberTMP, FishNumberTMP;
     public TextMeshProUGUI RubyErrorMessage;
     public TextMeshProUGUI RubyCount;
-    public GameObject[] UpgradeArray;
-    public TextMeshPro[] ItemNumbersArrayTMP;
-    private int UpgradeIndex = 0;
+    //public GameObject[] UpgradeArray;
+    //public TextMeshPro[] ItemNumbersArrayTMP;
+    //private int UpgradeIndex = 0;
    
 
     // Start is called before the first frame update
     void Start()
     {
         setCount();
-        setShop();
+        //setShop();
 
         ////////////////
 
@@ -47,13 +47,15 @@ public class ShopController : MonoBehaviour
             print($"Name: {item.name}, Stat Impacted: {item.stat_impacted}, Modifier: {item.modifier}");
         }
         
-        /////////////////
+       
 
     }
 
     // Update is called once per frame
     void Update()
-    {
+    { 
+/////////////////
+        /*
         if (Input.GetKeyUp(KeyCode.RightArrow))
         {
             this.UpgradeIndex++;
@@ -75,7 +77,8 @@ public class ShopController : MonoBehaviour
             }
             setShop();
         }
-        
+        */
+   ///////////////////////////////////////////     
         
         if(Input.GetKeyUp(KeyCode.G))
         {
@@ -108,7 +111,9 @@ public class ShopController : MonoBehaviour
         yield return new WaitForSeconds(1);
         this.RubyErrorMessage.gameObject.SetActive(false);
     }
-    
+
+/////////////////
+    /*
     private void setShop()
     {
         this.UpgradeArray[0].gameObject.SetActive(false);
@@ -123,8 +128,7 @@ public class ShopController : MonoBehaviour
         this.UpgradeArray[UpgradeIndex].gameObject.SetActive(true);
         this.ItemNumbersArrayTMP[UpgradeIndex].text = "";
     }
-    
-    //
+    */
     /////////////////////////
 
 
@@ -156,7 +160,7 @@ public class ShopController : MonoBehaviour
                             pos++;
                         }
                         print("Manually parsed with Item Object");
-                        Item theItem = new Item(itemParts[0], itemParts[1], int.Parse(itemParts[2]));
+                        Item theItem = new Item(itemParts[0], itemParts[1], int.Parse(itemParts[2]), int.Parse(itemParts[3]));
                         theItem.display();
                     }
                 }
@@ -173,6 +177,8 @@ public class ShopController : MonoBehaviour
             print("The file does not exist.");
         }
     }
+
+////////////////////
     /*
     private string readItemsDataJson()
     {
@@ -212,6 +218,7 @@ public class ShopController : MonoBehaviour
         }
     }
 
-    ///////////////////
+    
     */
+///////////////////
 }
